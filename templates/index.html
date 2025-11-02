@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPL Venue Performance Insights</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1f1c2c, #928DAB);
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #FFD700;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 10px #000;
+    }
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 15px;
+      width: 60%;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+    label, select, button {
+      margin: 10px;
+      font-size: 1rem;
+    }
+    select, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background-color: #FFD700;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #ffcd00d8;
+      transform: scale(1.05);
+    }
+    .card {
+      margin-top: 30px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 25px;
+      border-radius: 15px;
+      width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>🏏 IPL Venue Performance Insights</h1>
+
+  <form action="/" method="post">
+    <label for="mode">Select Analysis Type:</label>
+    <select name="mode" id="mode" required>
+      <option value="insight">Analytical Insight</option>
+      <option value="prediction">Prediction Style</option>
+    </select><br>
+
+    <label for="venue">Venue:</label>
+    <select name="venue" id="venue" required>
+      {% for v in venues %}
+        <option value="{{ v }}">{{ v }}</option>
+      {% endfor %}
+    </select><br>
+
+    <label for="team1">Team 1:</label>
+    <select name="team1" id="team1" required>
+      {% for t in teams %}
+        <option value="{{ t }}">{{ t }}</option>
+      {% endfor %}
+    </select><br>
+
+    <label for="team2">Team 2:</label>
+    <select name="team2" id="team2" required>
+      {% for t in teams %}
+        <option value="{{ t }}">{{ t }}</option>
+      {% endfor %}
+    </select><br>
+
+    <label for="toss_winner">Toss Winner (optional):</label>
+    <select name="toss_winner" id="toss_winner">
+      <option value="">--None--</option>
+      {% for t in teams %}
+        <option value="{{ t }}">{{ t }}</option>
+      {% endfor %}
+    </select><br>
+
+    <label for="toss_decision">Toss Decision (optional):</label>
+    <select name="toss_decision" id="toss_decision">
+      <option value="">--None--</option>
+      <option value="bat">Bat</option>
+      <option value="field">Field</option>
+    </select><br><br>
+
+    <button type="submit">Analyze</button>
+  </form>
+
+  {% if insights %}
+<div class="card">
+  <h2>📊 Analytical Insights</h2>
+  <p><strong>Venue:</strong> {{ insights.venue }}</p>
+  <p><strong>Total Matches:</strong> {{ insights.total_matches }}</p>
+  <p>{{ insights.team1 }} Wins: {{ insights.team1_wins }} ({{ insights.team1_percent }}%)</p>
+  <p>{{ insights.team2 }} Wins: {{ insights.team2_wins }} ({{ insights.team2_percent }}%)</p>
+  <p><strong>Toss Effect:</strong> {{ insights.toss_effect }}% toss winners also won the match</p>
+
+  {% if insights.chart %}
+  <img src="{{ url_for('static', filename='charts/' ~ insights.chart) }}" 
+       alt="Win Percentage Chart" 
+       style="margin-top:20px; width:70%; border-radius:15px; box-shadow:0 0 10px #000;">
+  {% endif %}
+</div>
+{% endif %}
+
+  {% if prediction %}
+  <div class="card">
+    <h2>🔮 Prediction</h2>
+    <p>{{ prediction }}</p>
+  </div>
+  {% endif %}
+</body>
+</html>
